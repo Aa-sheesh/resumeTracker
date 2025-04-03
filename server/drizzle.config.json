@@ -1,0 +1,9 @@
+{
+  "schema": "./models/schema.js",
+  "out": "./drizzle",
+  "driver": "pglite",
+  "dialect": "postgresql",
+  "dbCredentials": {
+    "url": "env.NEONDB_URL"
+  }
+}
