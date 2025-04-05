@@ -3,17 +3,25 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 /**
- * Get user profile
+ * Helper: Generate JWT Token
+ */
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+};
+
+/**
+ * GET /auth/me - Get user profile
  */
 export const getUserProfile = async (req, res) => {
   try {
-    const userId = req.user?.id; // Extract ID from token payload
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized: User ID is required" });
     }
 
-    // Fetch user from database (excluding password)
     const user = await User.findById(userId).select("-password");
 
     if (!user) {
@@ -28,11 +36,12 @@ export const getUserProfile = async (req, res) => {
 };
 
 /**
- * Register a new user
+ * POST /auth/register - Register new user
  */
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
@@ -41,97 +50,111 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
-    // Check if user already exists
-    if (await User.findOne({ email })) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
     const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
 
-    // Generate JWT with user ID
-    const token = jwt.sign({ id: newUser._id, email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = generateToken(newUser);
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(201).json({ message: "User created successfully", token });
+    res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message || "Something went wrong" });
   }
 };
 
 /**
- * Login user
+ * POST /auth/login - Login user
  */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password)
+      return res.status(400).json({ message: "Email and password are required" });
+
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
+    if (!user) return res.status(400).json({ message: "User not found" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid credentials" });
-    }
 
-    // Generate JWT with user ID
-    const token = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = generateToken(user);
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message || "Something went wrong" });
   }
 };
 
 /**
- * Logout user
+ * POST /auth/logout - Logout user
  */
-export const logout = async (req, res) => {
+export const logout = (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
+
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message || "Something went wrong" });
   }
 };
 
 /**
- * Delete user
+ * DELETE /auth/delete - Delete user
  */
 export const deleteUser = async (req, res) => {
   try {
     const userId = req.user?.id;
+
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized: User ID is required" });
     }
 
     await User.findByIdAndDelete(userId);
+
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -140,6 +163,6 @@ export const deleteUser = async (req, res) => {
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed deleting user" });
+    res.status(500).json({ message: error.message || "Failed deleting user" });
   }
 };
