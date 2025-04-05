@@ -1,5 +1,6 @@
 import React from "react";
 import { LogIn, FileText } from "lucide-react";
+import { useState } from "react";
 
 import {
   Dialog,
@@ -24,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function NavigationBar() {
+  const[authenticated,setAuthenticated] = useState(false);
   return (
     <>
       <nav className="flex px-[8vw] py-[2.5vh] justify-between items-center border-b-2">
