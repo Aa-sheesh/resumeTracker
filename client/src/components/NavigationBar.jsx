@@ -26,7 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 function NavigationBar() {
   return (
     <>
-      <nav className="flex px-[4vw] py-[2vh] justify-between items-center border-b-2">
+      <nav className="flex px-[8vw] py-[2.5vh] justify-between items-center border-b-2">
         {/* Logo Section */}
         <div className="flex items-center">
           <FileText className="text-[rgb(13,148,136)] h-8 w-8" />
