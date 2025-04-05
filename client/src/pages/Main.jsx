@@ -661,10 +661,99 @@ https://amazon.jobs/en/jobs/123 */}
                     <Trash2 />
                   </Button>
                 </div>
-                <Button className="text-white text-sm font-medium bg-[#051538] hover:bg-[#28385d]">
-                  <Send className="mr-1" />
-                  Track
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="text-white text-sm font-medium bg-[#051538] hover:bg-[#28385d]">
+                      <Send className="mr-1" />
+                      Track
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="w-full max-w-[80vw] p-6">
+                    {/* Resume *
+
+Software Developer Resume
+Company *
+Amazon
+Position *
+Full Stack Developer
+Application Date *
+
+02/20/2023
+Status *
+
+Applied
+Notes
+Applied through their career portal
+Contact Person
+e.g., Jane Smith
+Contact Email
+e.g., jane@company.com
+Job Posting URL
+https://amazon.jobs/en/jobs/123 */}
+
+                    <Label className={`ml-2 mb-0`}>Resume *</Label>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                          Select <ChevronDown />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className={`w-full`}>
+                        <DropdownMenuItem>
+                          Software Developer Resume
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          Full Stack Developer Resume
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Label className={`ml-2 mb-0`}>Company *</Label>
+                    <Input placeholder="Amazon" className="" type="text" />
+                    <Label className={`ml-2 mb-0`}>Position *</Label>
+                    <Input
+                      placeholder="Software Engineer"
+                      className=""
+                      type="text"
+                    />
+                    <Label className={`ml-2 mb-0`}>Application Date *</Label>
+                    <Input className="" type="date" />
+
+                    <Label className={`ml-2 mb-0`}>Status *</Label>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                          Applied <ChevronDown />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className={`w-full`}>
+                        <DropdownMenuItem>Applied</DropdownMenuItem>
+                        <DropdownMenuItem>Interview</DropdownMenuItem>
+                        <DropdownMenuItem>Offer</DropdownMenuItem>
+                        <DropdownMenuItem>Rejected</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Label className={`ml-2 mb-0`}>Notes </Label>
+                    <Textarea
+                      placeholder="Applied through their career portal"
+                      className=""
+                    />
+                    <div className="w-full flex ">
+                      <div className="w-[50%] mr-2">
+                        <Label className={`ml-2 mb-2`}>Contact Person</Label>
+                        <Input placeholder="e.g. John Doe" />
+                      </div>
+                      <div className="w-[50%]">
+                        <Label className={`ml-2 mb-2`}>Contact Email</Label>
+                        <Input type="email" placeholder="e.g. john@mail.com" />
+                      </div>
+                    </div>
+                    <Label className={`ml-2 `}>Job Posting URL</Label>
+                    <Input
+                      type="url"
+                      placeholder="https://amazon.jobs/en/jobs/123"
+                    />
+                  </DialogContent>
+                </Dialog>
               </CardFooter>
             </Card>
           ))}
