@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LogIn, FileText, LogOut, User } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import useUserStore from "@/stores/userStore";
 
 import { DropdownMenu,DropdownMenuItem,DropdownMenuContent,DropdownMenuTrigger } from "@/components/ui/dropdown-menu.jsx";
 
@@ -32,6 +33,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const API = import.meta.env.VITE_API_URL;
 
+
+
+
 function NavigationBar() {
   const [formData, setFormData] = useState({
     username: "",
@@ -40,6 +44,8 @@ function NavigationBar() {
   });
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState({});
+  const setUserStore = useUserStore((state) => state.setUser);
+  
 
   useEffect(() => {
     // Check auth on mount
