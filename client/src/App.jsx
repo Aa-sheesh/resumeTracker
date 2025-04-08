@@ -3,6 +3,7 @@ import { useState } from "react";
 // import viteLogo from '/vite.svg'
 import "./App.css";
 import { Toaster } from "react-hot-toast";
+import {useUserStore} from './stores/userStore'
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -11,8 +12,13 @@ import Main from "./pages/Main";
 import NavigationBar from "./components/NavigationBar";
 import Profile from "./pages/Profile";
 
+
 function App() {
   const [count, setCount] = useState(0);
+  const user = localStorage.getItem("user-storage");
+  if(!useUserStore.getState().user) {
+    useUserStore.getState().fetchUserProfile();
+  }
 
   return (
     
@@ -20,9 +26,9 @@ function App() {
     <Toaster/>
     <NavigationBar />
       <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/main" element={<Main />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={!user?<Homepage />:<Main/>} />
+        <Route path="/main" element={!user?<Homepage/>:<Main />} />
+        <Route path="/profile" element={!user?<Homepage/>:<Profile />} />
       </Routes>
     </BrowserRouter>
   );

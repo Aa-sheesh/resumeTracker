@@ -3,6 +3,7 @@ import { LogIn, FileText, LogOut, User } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import useUserStore from "@/stores/userStore";
+import { Link } from "react-router-dom";
 
 import { DropdownMenu,DropdownMenuItem,DropdownMenuContent,DropdownMenuTrigger } from "@/components/ui/dropdown-menu.jsx";
 
@@ -84,6 +85,9 @@ function NavigationBar() {
       toast.success("Login successful!");
       setAuthenticated(true);
       setUser(response.data.user || {}); // Use response.data.user if returned
+      setUserStore(response.data.user || {}); // Set user in store
+      localStorage.setItem("user-storage", JSON.stringify(response.data.user || {})); // Store user in local storage
+      window.location.reload(); // Refresh the page to reflect changes
     } catch (error) {
       toast.error(error?.response?.data?.message || "Login failed!");
     }
@@ -103,6 +107,9 @@ function NavigationBar() {
       toast.success("Signup successful!");
       setAuthenticated(true);
       setUser(response.data.user || {});
+      setUserStore(response.data.user || {}); // Set user in store
+      localStorage.setItem("user-storage", JSON.stringify(response.data.user || {})); // Store user in local storage
+      window.location.reload(); // Refresh the page to reflect changes
     } catch (error) {
       toast.error(error?.response?.data?.message || "Signup failed!");
     }
@@ -114,6 +121,10 @@ function NavigationBar() {
       toast.success("Logout successful!");
       setAuthenticated(false);
       setUser({});
+      setUserStore(null); // Clear user store
+      localStorage.removeItem("user-storage"); // Clear local storage
+      //refresh the page to remove user data from the UI
+      window.location.reload();
     } catch (error) {
       toast.error("Logout failed!");
     }
@@ -121,10 +132,10 @@ function NavigationBar() {
 
   return (
     <nav className="flex px-[8vw] py-[2.5vh] justify-between items-center border-b-2">
-      <div className="flex items-center">
+      <Link to='/' className="flex items-center cursor-pointer">
         <FileText className="text-[rgb(13,148,136)] h-8 w-8" />
         <div className="font-bold text-xl px-1">Resume Tracker</div>
-      </div>
+      </Link>
 
       {authenticated ? (
         <>
@@ -138,9 +149,11 @@ function NavigationBar() {
             
             <DropdownMenuContent>
               <DropdownMenuItem>
+                <Link to="/profile" className="flex items-center gap-2 font-normal">
                 <Button variant={`transparent `} className="flex items-center gap-2 font-normal">
                 <User /> Profile
                 </Button> 
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Button onClick={handleLogout} variant={`transparent `} className="flex items-center gap-2 font-normal">
