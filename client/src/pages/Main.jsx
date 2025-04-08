@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -44,6 +45,52 @@ import { Textarea } from "@/components/ui/textarea";
 // import { Calendar as CalendarComponent } from "@/components/ui/calendar"; // ✅ Ensure Calendar is imported
 
 function Main() {
+  const applicationForm = {
+    resume: "",
+    company: "",
+    position: "",
+    application_date: "",
+    status: "",
+    notes: "",
+    contact_person: "",
+    contact_email: "",
+    job_url: "",
+  };
+
+  const resumeForm = {
+    title: "",
+    personal: {
+      fullName: "",
+      email: "",
+      phone: "",
+      address: "",
+      linkedin: "",
+      website: "",
+    },
+    education: {
+      institution: "",
+      degree: "",
+      field: "",
+      start_date: "",
+      end_date: "",
+      description: "",
+    },
+    experience: {
+      company: "",
+      position: "",
+      start_date: "",
+      end_date: "",
+      description: "",
+    },
+    skills: {
+      skills: "",
+      professional_summary: "",
+    },
+  };
+
+  const [resume, setResume] = useState(resumeForm);
+  const [application, setApplication] = useState(applicationForm);
+
   return (
     <Tabs defaultValue="resumes" className="w-full max-w-[85vw] mx-auto px-4">
       <TabsList className="flex justify-between w-full bg-transparent my-5">
@@ -78,7 +125,7 @@ function Main() {
                   New Resume
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogContent className="w-full max-w-[80vw] p-6">
+              <DialogContent className="w-full  p-6">
                 <div className="w-full">
                   <DialogHeader>
                     <DialogTitle>Edit Resume</DialogTitle>
@@ -136,7 +183,7 @@ function Main() {
 
                     {/* EDUCATION SECTION */}
                     <TabsContent value="education">
-                      <Card className="w-full mb-2 rounded-md ">
+                      <Card className=" mb-2 rounded-md ">
                         <CardHeader className="font-semibold flex justify-between items-center">
                           <h1>Education #1</h1>
                           <Button
@@ -455,7 +502,11 @@ https://amazon.jobs/en/jobs/123 */}
                             <div className="flex w-full my-2">
                               <div className="w-[50%] m-2">
                                 <Label>Full Name *</Label>
-                                <Input placeholder="John Doe" type="text" />
+                                <Input
+                                  // onChange={handleChange}
+                                  placeholder="John Doe"
+                                  type="text"
+                                />
                               </div>
                               <div className="w-[50%] my-2">
                                 <Label>Email *</Label>

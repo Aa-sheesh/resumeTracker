@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema(
       minlength: 6, // Minimum length of 6 characters
     },
     resumes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Resume" }],
+    bio: {
+      type: String,
+      default: "",
+    },
+    location: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

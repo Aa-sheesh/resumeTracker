@@ -165,4 +165,23 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message || "Failed deleting user" });
   }
+
+  
+};
+
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { bio, location } = req.body;
+    const userId = req.user.id;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { bio, location },
+      { new: true }
+    );
+
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: "Could not update profile." });
+  }
 };
